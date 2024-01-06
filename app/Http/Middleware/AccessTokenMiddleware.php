@@ -17,9 +17,10 @@ class AccessTokenMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ( ! $request->user() || ! $request->user()->tokenCan(AuthEnum::AUTH_TOKEN_ABILITY)) {
-            return JsonResponseHelper::unauthorizedError();
+        if ($request->user()->tokenCan(AuthEnum::AUTH_TOKEN_ABILITY)) {
+            return $next($request);
         }
-        return $next($request);
+        
+        return JsonResponseHelper::unauthorizedError();
     }
 }

@@ -26,9 +26,9 @@ Route::get("ping", function(){
 
 Route::post("register", [AuthController::class, 'registration']);
 Route::post("session", [AuthController::class, 'login']);
-Route::put("session", [AuthController::class, 'refreshToken'])->middleware(['refresh.token']);
+Route::put("session", [AuthController::class, 'refreshToken'])->middleware(['auth:sanctum', 'refresh.token']);
 
-Route::prefix('reminders')->middleware(['access.token'])->group(function () {
+Route::prefix('reminders')->middleware(['auth:sanctum', 'access.token'])->group(function () {
     Route::post('/', [UserReminderController::class, 'store']);
     Route::get('/', [UserReminderController::class, 'getListReminder']);
     Route::get('/{userReminder}', [UserReminderController::class, 'show']);

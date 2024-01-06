@@ -19,4 +19,9 @@ class Authenticate extends Middleware
             return route('/');
         } 
     }
+
+    protected function unauthenticated($request, array $guards)
+    {
+         return JsonResponseHelper::unauthorizedError();
+    }
 }
