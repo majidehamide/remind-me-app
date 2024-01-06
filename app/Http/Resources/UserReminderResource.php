@@ -14,6 +14,12 @@ class UserReminderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "title" => $this->title,
+            "description" => $this->description,
+            "remind_at" => $this->remind_at,
+            "event_at"=>$this->event_at
+        ];
     }
 }
