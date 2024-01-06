@@ -8,5 +8,6 @@ class HttpStatus
 {
     const SUCCESS = 200;
     const UNPROCESSABLE_ENTITY = 422;
+    const UNAUTHORIZED = 401;
 
 }

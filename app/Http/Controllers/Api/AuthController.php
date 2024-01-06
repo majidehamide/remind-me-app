@@ -2,25 +2,36 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
 use App\Enums\ErrorType;
 use App\Enums\ErrorMessage;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponseHelper;
+use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUserRequest;
-use App\Services\UserService\UserService;
+use App\Services\AuthService\AuthServiceInterface;
+use App\Services\UserService\UserServiceInterface;
 
 
 class AuthController extends Controller
 {
-    public function registration(StoreUserRequest $request, UserService $userService)
+    protected $userService;
+    protected $authService;
+
+    public function __construct(UserServiceInterface $userService, AuthServiceInterface $authService)
+    {
+        $this->userService = $userService;
+        $this->authService = $authService;
+    }
+
+    //registration method
+    public function registration(StoreUserRequest $request)
     {
         try {
             //create user
-            $user =  $userService->create($request->toDTO());
+            $user =  $this->userService->create($request->toDTO());
             //return response JSON user is created
             return JsonResponseHelper::successRegister(new UserResource($user));
         } catch (\Exception $e) {
@@ -29,46 +40,35 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request) 
+    //login method
+    public function login(LoginRequest $request) 
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                "ok"=> false,
-                "err"=> "ERR_INVALID_CREDS",
-                "msg"=> "incorrect username or password"
-            ], 401);
+        try {
+            //attempt to login
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return JsonResponseHelper::unauthorizedErrorLogin();
+            }
+            //get user by email
+            $user =  $this->userService->getByEmail($request->email);
+            $accessToken = $this->authService->createAccessToken($user);
+            $refreshToken = $this->authService->createRefreshToken($user);
+            return JsonResponseHelper::successLogin(new UserResource($user), $accessToken, $refreshToken);
+        } catch (\Exception $e) {
+            //return JSON process failed 
+            return JsonResponseHelper::internalError(ErrorType::INTERNAL_ERROR_TYPE, ErrorMessage::INTERNAL_ERROR_MESSAGE);
         }
-
-        $user = User::where('email', $request->email)->firstOrFail();
-
-        $accessToken = $user->createToken('auth_token',['token-access'], now()->addMinutes(10))->plainTextToken;
-        $refreshToken = $user->createToken('refresh_token', ['token-refresh'], now()->addWeek())->plainTextToken;
-        return response()->json([
-            "ok"=> true,
-            "data"=> [
-                "user"=> new UserResource($user),
-                "access_token"=> $accessToken,
-                "refresh_token"=> $refreshToken
-            ]
-        ]);
+        
     }
-
+    //refresh user Token method
     public function refreshToken(Request $request)
     {
-        if ($request->user()->tokenCan('token-refresh')) {
-            return response()->json([
-                "ok"=> true,
-                "data"=> [
-                    "access_token"=> $request->user()->createToken('auth_token',['token-access'], now()->addMinutes(10))->plainTextToken
-                ]
-            ]);
+        try {
+            $accessToken = $this->authService->createAccessToken($request->user());
+            return JsonResponseHelper::successRefreshToken($accessToken);
+        } catch (\Exception $e) {
+            //return JSON process failed 
+            return JsonResponseHelper::internalError(ErrorType::INTERNAL_ERROR_TYPE, ErrorMessage::INTERNAL_ERROR_MESSAGE);
         }
-        return response()->json([
-            "ok"=> false,
-            "err"=> "ERR_INVALID_CREDS",
-            "msg"=> "incorrect username or password"
-        ], 401);
-        
     }
 
 }

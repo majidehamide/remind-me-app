@@ -6,7 +6,7 @@ use App\DataTransferObjects\StoreUserDTO;
 use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 
-class UserService
+class UserService implements UserServiceInterface
 {
     protected $userRepository;
     
@@ -16,5 +16,8 @@ class UserService
     }
     public function create(StoreUserDTO $storeUserDTO):User{
         return $this->userRepository->create($storeUserDTO->toArray());
+    }
+    public function getByEmail($email):?User{
+        return $this->userRepository->getByEmail($email);
     }
 }
