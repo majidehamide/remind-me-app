@@ -3,13 +3,19 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Enums\AuthEnum;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponseHelper;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\AuthService\AuthServiceInterface;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AccessTokenMiddleware
+class AccessTokenMiddleware extends Middleware
 {
+    protected $authService;
+    public function __construct(AuthServiceInterface $authService)
+    {
+        $this->authService = $authService;   
+    }
     /**
      * Handle an incoming request.
      *
@@ -17,7 +23,7 @@ class AccessTokenMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->tokenCan(AuthEnum::AUTH_TOKEN_ABILITY)) {
+        if (!is_null($request->user()) && $this->authService->isAuthHasAccessToken($request->user())) {
             return $next($request);
         }
         

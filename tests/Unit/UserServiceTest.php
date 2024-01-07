@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\DataTransferObjects\StoreUserDTO;
 use Mockery;
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use App\Repositories\User\UserRepository;
 use App\Services\UserService\UserService;
 

@@ -45,7 +45,7 @@ class AuthController extends Controller
     {
         try {
             //attempt to login
-            if (!Auth::attempt($request->only('email', 'password'))) {
+            if (!Auth::attempt($request->toDTO->toArray())) {
                 return JsonResponseHelper::unauthorizedErrorLogin();
             }
             //get user by email
