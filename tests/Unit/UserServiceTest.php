@@ -2,17 +2,18 @@
 
 namespace Tests\Unit;
 
-use App\DataTransferObjects\StoreUserDTO;
 use Mockery;
-use App\Models\User;
 use Tests\TestCase;
+use App\Models\User;
+use App\DataTransferObjects\StoreUserDTO;
 use App\Repositories\User\UserRepository;
 use App\Services\UserService\UserService;
+use App\Services\UserService\UserServiceInterface;
 
-use function Laravel\Prompts\password;
 
 class UserServiceTest extends TestCase
 {
+    
     /**
      * A basic unit test example.
      */
@@ -28,6 +29,17 @@ class UserServiceTest extends TestCase
         $mockUserRepository->shouldReceive('create')->once()->andReturn($demoUser);
         $userService = new UserService($mockUserRepository);
         $this->assertEquals($userService->create($userDTO), $demoUser);
-        $this->assertTrue(true);
+    }
+
+    public function test_get_user_by_email():void{
+        $demoUser = new User([
+            "id" => 1,
+            "name" => "Majid",
+            "email" => "majid@test.id"
+        ]);
+        $mockUserRepository = Mockery::mock(UserRepository::class)->makePartial();
+        $mockUserRepository->shouldReceive('getByEmail')->once()->andReturn($demoUser);
+        $userService = new UserService($mockUserRepository);
+        $this->assertEquals($userService->getByEmail("majid@test.id"), $demoUser);
     }
 }
