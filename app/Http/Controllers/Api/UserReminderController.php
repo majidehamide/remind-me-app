@@ -4,50 +4,28 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\UserReminder;
 use Illuminate\Http\Request;
+use App\Helpers\JsonResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserReminderResource;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreUserReminderRequest;
+use App\Services\UserReminderService\UserReminderServiceInterface;
 
 class UserReminderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $userReminderService;
+
+    public function __construct(UserReminderServiceInterface $userReminderService)
     {
-        //
+        $this->userReminderService = $userReminderService;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserReminderRequest $request)
     {
-        //set validation
-        $validator = Validator::make($request->all(), [
-            'title'      => 'required|string',
-            'description'     => 'required|string',
-            'remind_at'  => 'required|integer',
-            'event_at'  => 'required|integer',
-        ]);
-
-        //if validation fails
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    'success' => false,
-                    'errors'    => $validator->errors(), 
-                ], 422);
-        }
-
-        //create reminder
-        $input = $request->all();
-        $input['user_id'] = $request->user()->id;
-        $userReminder = UserReminder::create($input);
-        return response()->json([
-            "ok" => true,
-            "data" => new UserReminderResource($userReminder)
-        ]);
+        $userReminder = $this->userReminderService->create($request->toDTO());
+        return JsonResponseHelper::successResponseWithData(new UserReminderResource($userReminder));
     }
 
     /**
@@ -55,12 +33,9 @@ class UserReminderController extends Controller
      */
     public function getListReminder(Request $request)
     {
-        
-        //$reminders = User
-        return response()->json([
-            "ok" => true,
-            "data" => new UserReminderResource($userReminder)
-        ]);
+        $userReminders = $this->userReminderService->fetch($request);
+        $userReminders['reminders'] = UserReminderResource::collection( $userReminders['reminders']);
+        return JsonResponseHelper::successResponseWithData($userReminders);
     }
 
     /**
@@ -68,21 +43,16 @@ class UserReminderController extends Controller
      */
     public function show(UserReminder $userReminder)
     {
-        return response()->json([
-            "ok" => true,
-            "data" => new UserReminderResource($userReminder)
-        ]);
+        return JsonResponseHelper::successResponseWithData(new UserReminderResource($userReminder));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserReminder $userReminder)
+    public function update(StoreUserReminderRequest $request, UserReminder $userReminder)
     {
-        return response()->json([
-            "ok" => true,
-            "data" => new UserReminderResource($userReminder)
-        ]);
+        $userReminder = $this->userReminderService->update($request->toDTO(),$userReminder);
+        return JsonResponseHelper::successResponseWithData(new UserReminderResource($userReminder));
     }
 
     /**
@@ -90,9 +60,7 @@ class UserReminderController extends Controller
      */
     public function destroy(UserReminder $userReminder)
     {
-        return response()->json([
-            "ok" => true,
-            "data" => new UserReminderResource($userReminder)
-        ]);
+        $userReminder = $this->userReminderService->delete($userReminder);
+        return JsonResponseHelper::successResponse();
     }
 }

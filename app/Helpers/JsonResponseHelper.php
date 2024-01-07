@@ -20,7 +20,7 @@ class JsonResponseHelper
                 "ok"=> false,
                 "err"=> $errorType,
                 "msg"=> $errorMessage
-        ], HttpStatus::UNPROCESSABLE_ENTITY);
+        ], HttpStatus::INTERNAL_ERROR);
     }
 
     public static function unauthorizedErrorLogin(){
@@ -58,4 +58,19 @@ class JsonResponseHelper
             ]
         ], HttpStatus::SUCCESS);
     }
+
+    public static function successResponse(){
+        return response()->json([
+            "ok"=> true
+        ], HttpStatus::SUCCESS);
+    }
+
+    public static function successResponseWithData($data){
+        return response()->json([
+            "ok"=> true,
+            "data"=> $data
+        ], HttpStatus::SUCCESS);
+    }
+
+    
 }
