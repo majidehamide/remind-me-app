@@ -445,20 +445,7 @@
                           padding-left: 0px;
                         ">
                                             <!--<![endif]-->
-                                            <center>
-                                                <img class="center fixedwidth" align="center" border="0" src="https://idijakpus.sgp1.digitaloceanspaces.com/logo/logo-new-idi.png" alt="Image" title="Image" style="
-                              outline: none;
-                              text-decoration: none;
-                              -ms-interpolation-mode: bicubic;
-                              clear: both;
-                              display: block !important;
-                              border: none;
-                              height: auto;
-                              float: none;
-                              width: 100%;
-                              max-width: 120px;
-                            " width="144" />
-                                            </center>
+                                            
                                             <div class="">
                                                 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 20px; padding-left: 20px; padding-top: 20px; padding-bottom: 20px;"><![endif]-->
                                                 <div style="
@@ -479,16 +466,15 @@
                                   Helvetica, Arial, sans-serif;
                                 text-align: left;
                               ">
-                                                        <center>
+                                                        
                                                             <p style="
                                     margin: 0;
                                     font-size: 14px;
                                     line-height: 25px;
                                   ">
-                                                                <span style="line-height: 25px; font-size: 14px"><strong>Halo
-                                                                        {{ $nama }}, </strong></span>
+                                                                <span style="line-height: 25px; font-size: 14px"><strong>Hello
+                                                                        {{ $userReminder->user->name }}, </strong></span>
                                                             </p>
-                                                        </center>
                                                         <p style="
                                   margin: 0;
                                   font-size: 14px;
@@ -496,37 +482,35 @@
                                 ">
                                                             <br />
                                                         </p>
-                                                        <center>
+                                                        
                                                             <p style="
                                     margin: 0;
                                     font-size: 12px;
                                     line-height: 22px;
                                   ">
-                                                                <span style="line-height: 25px; font-size: 14px">selamat
-                                                                    anda telah mendaftar di webinar: {{ $titleWebinar }}.
-                                                                    Harap klik
-                                                                    tombol webinar dibawah ini untuk mengakses
-                                                                    webinar.</span>
+                                                                <span style="line-height: 25px; font-size: 14px">Your event will start soon!</span>
                                                             </p>
-                                                        </center>
+                                                       
                                                         <br />
                                                         <p style="
                                                         margin: 0;
                                                         font-size: 14px;
                                                         line-height: 25px;
                                                       ">
-                                                            Zoom ID {{ $zoom_id }}</p>
+                                                            Title : {{ $userReminder->title }}</p>
+                                                            <p style="
+                                                        margin: 0;
+                                                        font-size: 14px;
+                                                        line-height: 25px;
+                                                      ">
+                                                            Description : {{ $userReminder->description }}</p>
                                                         <p style="
                                                         margin: 0;
                                                         font-size: 14px;
                                                         line-height: 25px;
                                                       ">
-                                                            Password {{ $password }}</p>
-                                                        <center>
-                                                            <a href="{{ $url }}" target="_blank"><button class="gradient-uic">
-                                                                    <span class="button-color">Webinar</span>
-                                                                </button></a>
-                                                        </center>
+                                                            Event At : {{ \Carbon\Carbon::createFromTimeStamp($userReminder->remind_at) }}</p>
+                                                        
                                                     </div>
                                                 </div>
                                                 <!--[if mso]></td></tr></table><![endif]-->
@@ -617,19 +601,7 @@
                                   line-height: 21px;
                                   text-align: center;
                                 ">
-                                                            <span style="line-height: 18px; font-size: 15px">Anda akan
-                                                                otomatis diarahkan kembali
-                                                                pada</span>
-                                                        </p>
-                                                        <p style="
-                                  margin: 0;
-                                  font-size: 14px;
-                                  line-height: 21px;
-                                  text-align: center;
-                                ">
-                                                            <span style="line-height: 18px; font-size: 15px">Aplikasi
-                                                                Simfoni untuk melanjutkan
-                                                                registrasi</span>
+                                                            <span style="line-height: 18px; font-size: 15px">Remind Me App</span>
                                                         </p>
                                                         <br />
                                                         <br />
@@ -639,11 +611,8 @@
                                   line-height: 21px;
                                   text-align: center;
                                 ">
-                                                            <span style="line-height: 18px; font-size: 15px">Terimakasih
-                                                                <br />Jl. Salemba Tengah Blok D-E No.12, RT.1/RW.3,
-                                                                Paseban, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus
-                                                                Ibukota Jakarta 10440, Indonesia
-                                                                <br />https://www.idijakpus.or.id/
+                                                            <span style="line-height: 18px; font-size: 15px">Thanks
+                                                               
                                                             </span>
                                                         </p>
                                                     </div>
