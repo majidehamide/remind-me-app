@@ -39,6 +39,9 @@ class Handler extends ExceptionHandler
             }
         });
         $this->renderable(function (\Exception $e, Request $request) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 404);
             return JsonResponseHelper::internalError(ErrorType::INTERNAL_ERROR_TYPE, ErrorMessage::INTERNAL_ERROR_MESSAGE);
         });
         

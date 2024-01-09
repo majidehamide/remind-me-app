@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\Models\UserReminder;
 use Illuminate\Http\Request;
+use App\Mail\UserReminderEmail;
 use App\Helpers\JsonResponseHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\UserReminderResource;
 use App\Http\Requests\StoreUserReminderRequest;
+use App\Jobs\UserReminderJob;
 use App\Services\UserReminderService\UserReminderServiceInterface;
 
 class UserReminderController extends Controller
@@ -25,6 +29,8 @@ class UserReminderController extends Controller
     public function store(StoreUserReminderRequest $request)
     {
         $userReminder = $this->userReminderService->create($request->toDTO());
+        $reminderTime = Carbon::createFromTimeStamp($userReminder->remind_at);
+        UserReminderJob::dispatch($request->user(), $userReminder)->delay($reminderTime->addMinute());
         return JsonResponseHelper::successResponseWithData(new UserReminderResource($userReminder));
     }
 
