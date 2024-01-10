@@ -1,0 +1,19 @@
+version: '3'
+name: remind-me-app-fe
+
+services:
+    app-react:
+      build: .
+      volumes:
+        - ./:/app
+        - /app/node_modules
+        - /app/.next
+      restart: always
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+      ports:
+        - "3000:3000"
+
